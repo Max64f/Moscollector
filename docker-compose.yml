@@ -1,0 +1,96 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: moscollector-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ldt}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ldt}
+      POSTGRES_DB: ${POSTGRES_DB:-moscollector}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: moscollector-backend
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+      PYTHONPATH: /app
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://ldt:ldt@db:5432/moscollector}
+      PARQUET_DIR: /parquet
+      MODELS_DIR: /parquet/models
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ${DATA_DIR:-../dataset}:/data:ro
+      - ${PARQUET_DIR:-../dataset/parquet}:/parquet:ro
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  frontend:
+    build: ./frontend
+    container_name: moscollector-frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    volumes:
+      - ./frontend/docker/index.html:/usr/share/nginx/html/index.html:ro
+      - ./frontend/docker/styles.css:/usr/share/nginx/html/styles.css:ro
+      - ./frontend/docker/app.js:/usr/share/nginx/html/app.js:ro
+    depends_on:
+      - backend
+
+  etl:
+    build: ./etl
+    container_name: moscollector-etl
+    profiles: ["etl"]
+    environment:
+      DATA_DIR: /data
+      PARQUET_DIR: /parquet
+      OUTPUT_MD: /docs/data_profile.md
+      OUTPUT_JSON: /app/output/profile.json
+      DATABASE_URL: postgresql://ldt:ldt@db:5432/moscollector
+    volumes:
+      - ${DATA_DIR:-../dataset}:/data:ro
+      - ${PARQUET_DIR:-../dataset/parquet}:/parquet
+      - ./etl:/app
+      - ./docs:/docs
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ml:
+    build: ./ml
+    container_name: moscollector-ml
+    profiles: ["ml"]
+    environment:
+      DATA_DIR: /data
+      PARQUET_DIR: /parquet
+      MODELS_DIR: /parquet/models
+      DOCS_DIR: /docs
+      PYTHONPATH: /app
+      DATABASE_URL: postgresql://ldt:ldt@db:5432/moscollector
+      OMP_NUM_THREADS: ${LGBM_THREADS:-8}
+      OPENBLAS_NUM_THREADS: ${LGBM_THREADS:-8}
+      LGBM_NUM_THREADS: ${LGBM_THREADS:-8}
+    volumes:
+      - ${DATA_DIR:-../dataset}:/data:ro
+      - ${PARQUET_DIR:-../dataset/parquet}:/parquet
+      - ./ml:/app/ml
+      - ./docs:/docs
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+

@@ -1,0 +1,271 @@
+/* Темы: data-theme="night" | "lct" | "day" на <html>. По умолчанию night.
+   Риски (пожар / вода / отказ / НСД) заданы отдельно и не зависят от темы. */
+
+:root,
+[data-theme="night"] {
+  --bg: #10141c;
+  --surface: #181e28;
+  --surface-2: #1f2733;
+  --text: #e6edf3;
+  --muted: #8fa0b3;
+  --note: #c9d6e2;
+  --border: #2a3444;
+  --border-strong: #334155;
+  --accent: #4aa39a;
+  --accent-strong: #2f7a74;
+  --on-accent: #f4fffc;
+  --brand: #4aa39a;
+  --ok-bg: #163226;
+  --ok-text: #b6e3c5;
+  --error-text: #f2b8b5;
+  --error-bg: #3a1d1d;
+  --critical-bg: #2a1c1c;
+  --critical-border: #5a3030;
+  --color-scheme: dark;
+}
+
+[data-theme="lct"] {
+  --bg: #160c22;
+  --surface: #221433;
+  --surface-2: #2c1a42;
+  --text: #f2eaf8;
+  --muted: #b5a8c9;
+  --note: #d8cce8;
+  --border: #3d2a55;
+  --border-strong: #4d3868;
+  --accent: #8a83d1;
+  --accent-strong: #6b64b8;
+  --on-accent: #f4f2ff;
+  --brand: #fc3777;
+  --ok-bg: #163226;
+  --ok-text: #b6e3c5;
+  --error-text: #f2b8b5;
+  --error-bg: #3a1d1d;
+  --critical-bg: #2a1c1c;
+  --critical-border: #5a3030;
+  --color-scheme: dark;
+}
+
+[data-theme="day"] {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --surface-2: #e8ecf0;
+  --text: #1c2430;
+  --muted: #5a6a7a;
+  --note: #3a4a58;
+  --border: #d5dce3;
+  --border-strong: #c3ccd6;
+  --accent: #2a7a73;
+  --accent-strong: #246e68;
+  --on-accent: #f4fffc;
+  --brand: #2a7a73;
+  --ok-bg: #e3f4ea;
+  --ok-text: #1d5c38;
+  --error-text: #a33b32;
+  --error-bg: #f8e4e2;
+  --critical-bg: #f8e8e6;
+  --critical-border: #e0b4b0;
+  --color-scheme: light;
+}
+
+html {
+  color: var(--text);
+  background: var(--bg);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.4;
+  color-scheme: var(--color-scheme);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; color: inherit; background: inherit; }
+button, select, textarea, input { font: inherit; color-scheme: inherit; }
+
+.app { max-width: 1280px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+.top h1 {
+  margin: 0 0 0.2rem;
+  font-size: 1.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.top h1::before {
+  content: "";
+  width: 4px;
+  height: 1.15em;
+  border-radius: 2px;
+  background: var(--brand);
+  flex-shrink: 0;
+}
+.top p { margin: 0; color: var(--muted); }
+.top-actions { display: flex; gap: 0.75rem; align-items: end; }
+.top-actions label { display: grid; gap: 0.2rem; font-size: 0.8rem; color: var(--muted); }
+.who { align-self: end; color: var(--muted); padding-bottom: 0.35rem; }
+.theme-toggle { align-self: end; }
+
+.tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.tabs button, .filters button, .decision button, .ghost {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+.tabs button.on, .chip.on {
+  background: var(--accent-strong);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.grow { flex: 1; }
+.ghost { background: transparent; }
+
+.banner {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  margin: 0 0 1rem;
+}
+.banner.ok { background: var(--ok-bg); color: var(--ok-text); }
+.error { color: var(--error-text); }
+.banner.error { background: var(--error-bg); }
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.kpis article {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top-width: 3px;
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+}
+.kpis span { color: var(--muted); font-size: 0.8rem; }
+.kpis strong { display: block; font-size: 1.4rem; }
+
+.critical {
+  background: var(--critical-bg);
+  border: 1px solid var(--critical-border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+}
+.critical h2 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+.critical ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.critical button {
+  background: transparent;
+  color: var(--error-text);
+  border: 1px solid var(--critical-border);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
+}
+
+.layout { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 1rem; }
+@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+.list-pane, .card-pane, .analyst {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  min-height: 24rem;
+}
+.filters { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+select, textarea, input:not([type="radio"]):not([type="checkbox"]) {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem;
+}
+
+.pred-list { list-style: none; margin: 0; padding: 0; }
+.pred {
+  width: 100%;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  text-align: left;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  border-bottom: 1px solid var(--surface-2);
+  padding: 0.55rem 0.2rem;
+  cursor: pointer;
+}
+.pred.on { background: var(--surface-2); }
+.pred i { width: 8px; height: 32px; border-radius: 4px; display: block; }
+.pred-main { flex: 1; display: grid; }
+.pred-main em { color: var(--muted); font-style: normal; font-size: 0.8rem; }
+
+.crumb { color: var(--muted); font-size: 0.85rem; margin: 0 0 0.3rem; }
+.card-pane h2 { margin: 0 0 0.5rem; display: flex; gap: 0.8rem; align-items: baseline; }
+.card-pane h2 small { color: var(--muted); font-weight: 500; font-size: 1rem; }
+.explain, .reco { margin: 0 0 0.7rem; }
+.reco { background: var(--surface-2); padding: 0.6rem 0.7rem; border-radius: 8px; }
+
+.schema { margin: 1rem 0; }
+.schema-head h3 { margin: 0; }
+.schema-head p { margin: 0.15rem 0; color: var(--muted); font-size: 0.85rem; }
+.schema-note { font-size: 0.8rem !important; }
+.picket-line { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.picket {
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
+  min-width: 3.2rem;
+}
+.picket small { display: block; color: var(--muted); }
+.picket.is-fire { background: #3a1d1d; border-color: #e85d4c; color: #f2e8e6; }
+.picket.is-flood { background: #163044; border-color: #3d8fd1; color: #e6eef4; }
+.picket.is-fire.is-flood { background: #2a2040; border-color: #9b6bdb; color: #eee8f6; }
+.picket.is-hot { box-shadow: 0 0 0 1px var(--text) inset; }
+.picket.is-more { color: var(--muted); }
+
+.events { list-style: none; padding: 0; margin: 0 0 1rem; }
+.events li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 0.5rem; font-size: 0.85rem; padding: 0.2rem 0; border-bottom: 1px solid var(--surface-2); }
+.events time { color: var(--muted); }
+
+.decision { display: grid; gap: 0.6rem; }
+.decision-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { display: flex; gap: 0.3rem; align-items: center; padding: 0.3rem 0.55rem; border: 1px solid var(--border); border-radius: 999px; cursor: pointer; }
+.chip input { accent-color: var(--accent); }
+.check { display: flex; gap: 0.4rem; align-items: center; font-size: 0.9rem; }
+.check input { accent-color: var(--accent); }
+.decision button {
+  justify-self: start;
+  background: var(--accent-strong);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.muted { color: var(--muted); }
+.closed { background: var(--ok-bg); color: var(--ok-text); padding: 0.6rem; border-radius: 8px; }
+.note { color: var(--note); }
+
+.analyst table { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1rem; }
+.analyst th, .analyst td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--surface-2); }
+
+@media print {
+  .top-actions, .tabs, .filters, .decision, .critical, .kpis { display: none !important; }
+  .layout { display: block; }
+  .list-pane { display: none; }
+  .card-pane { border: 0; }
+  body { background: white; color: black; }
+}

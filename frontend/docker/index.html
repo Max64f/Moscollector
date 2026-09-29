@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru" data-theme="night">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <title>Москоллектор — диспетчерская</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("ods-theme");
+          if (t === "day" || t === "night") document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="/styles.css?v=theme1" />
+  </head>
+  <body>
+    <div id="root" class="app">Загрузка…</div>
+    <script src="/app.js?v=theme1"></script>
+  </body>
+</html>
